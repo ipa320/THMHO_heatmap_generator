@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>factory_sim</name>
+  <version>0.0.0</version>
+  <description>The factory_sim package</description>
+
+  <maintainer email="hsd@ipa.fraunhofer.de">ipa-hsd</maintainer>
+
+  <license>Apache 2.0</license>
+
+  <buildtool_depend>catkin</buildtool_depend>
+  <depend>gazebo_ros</depend>
+  <exec_depend>gazebo</exec_depend>
+  <exec_depend>turtlebot3_description</exec_depend>
+
+  <export>
+    <gazebo_ros gazebo_model_path="${prefix}/models"/>
+  </export>
+</package>
