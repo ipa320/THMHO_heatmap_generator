@@ -12,10 +12,6 @@
         <arg name="z_pos" default="0.0"/>
 
         <arg name="map_file" default="$(find turtlebot3_navigation)/maps/map.yaml"/>
-        <arg name="move_forward_only" default="false"/>
-
-        <arg name="cmd_vel_topic" default="/cmd_vel" />
-        <arg name="odom_topic" default="odom" />
 
         <!-- include gazebo_ros launcher -->
         <include file="$(find gazebo_ros)/launch/empty_world.launch">
@@ -36,42 +32,20 @@
                 </node>
         </group>
 
-        <group ns="robot">
-                <param name="robot_description" command="$(find xacro)/xacro --inorder $(find turtlebot3_description)/urdf/turtlebot3_$(arg model).urdf.xacro ns:=robot" />
+        <arg name="robot1" value="robot1" />
+        <group ns="$(arg robot1)">
+                <param name="robot_description" command="$(find xacro)/xacro --inorder $(find turtlebot3_description)/urdf/turtlebot3_$(arg model).urdf.xacro ns:=$(arg robot1)" />
                 <node pkg="gazebo_ros" type="spawn_model" name="spawn_robot" args="-urdf -model turtlebot3_$(arg model) -x $(arg x_pos) -y $(arg y_pos) -z $(arg z_pos) -param robot_description" />
                 <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher">
-                        <param name="tf_prefix" value="robot" />
+                        <param name="tf_prefix" value="$(arg robot1)" />
                 </node>
-
-                <!-- AMCL -->
-                <include file="$(find turtlebot3_navigation)/launch/amcl.launch" >
-                        <arg name="scan_topic" value="/robot/scan" />
-                        <remap from="static_map" to="/static_map" />
+                <include file="$(find factory_sim)/launch/robot_navigation.launch">
+                        <arg name="robot_name" value="$(arg robot1)" />
+                        <arg name="map_file" value="$(arg map_file)" />
                 </include>
-
-                <!-- move_base -->
-                <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen">
-                        <param name="base_local_planner" value="dwa_local_planner/DWAPlannerROS" />
-                        <rosparam file="$(find turtlebot3_navigation)/param/costmap_common_params_$(arg model).yaml" command="load" ns="global_costmap" />
-                        <rosparam file="$(find turtlebot3_navigation)/param/costmap_common_params_$(arg model).yaml" command="load" ns="local_costmap" />
-                        <rosparam file="$(find turtlebot3_navigation)/param/local_costmap_params.yaml" command="load" />
-                        <rosparam file="$(find turtlebot3_navigation)/param/global_costmap_params.yaml" command="load" />
-                        <rosparam file="$(find turtlebot3_navigation)/param/move_base_params.yaml" command="load" />
-                        <rosparam file="$(find turtlebot3_navigation)/param/dwa_local_planner_params_$(arg model).yaml" command="load" />
-                        <remap from="cmd_vel" to="$(arg cmd_vel_topic)" />
-                        <remap from="odom" to="/robot/odom" />
-                        <param name="DWAPlannerROS/min_vel_x" value="0.0" if="$(arg move_forward_only)" />
-                        <param name="local_costmap/scan/topic" value="/robot/scan" />
-                        <param name="global_costmap/scan/topic" value="/robot/scan" />
-                </node>
-
-                <!-- Map server - Temp solution; should not be in the robot's namespace
-                     But without this, AMCL is unable to find the static_map service inspite of remapping -->
-                <node pkg="map_server" name="map_server" type="map_server" args="$(arg map_file)"/>
         </group>
 
         <node pkg="tf" type="static_transform_publisher" name="sensor_link_broadcaster" args="0 0 0 0 0 0 world map 100" />
-
         <node pkg="rviz" type="rviz" name="rviz" required="true"
           args="-d $(find factory_sim)/rviz/multirobot.rviz"/>
 </launch>
