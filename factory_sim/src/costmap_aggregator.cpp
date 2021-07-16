@@ -10,7 +10,7 @@ public:
     CostmapAggregator() : seq_(0), num_scans_(0)
     {
         heatmap_pub_ = nh_.advertise<nav_msgs::OccupancyGrid>("/heatmap", 1000);
-        timer_ = nh_.createTimer(ros::Duration(15.0), &CostmapAggregator::publishHeatmap, this);
+        timer_ = nh_.createTimer(ros::Duration(60.0), &CostmapAggregator::publishHeatmap, this);
         costmap_sub_ = nh_.subscribe("/costmap_generator/costmap/costmap", 10, &CostmapAggregator::costmapCallback, this);
         occupancy_grid_ = boost::make_shared<nav_msgs::OccupancyGrid>();
     }
@@ -25,7 +25,7 @@ private:
     std::mutex heatmap_mutex_;
     boost::shared_ptr<nav_msgs::OccupancyGrid> occupancy_grid_;
 
-    const float max_costmap_ = 255.0f;   // scaling factor for obstacle "hits"
+    const float max_costmap_ = 100.0f;   // scaling factor for obstacle "hits"
     std::vector<float> heatmap_vec_;
 
     void publishHeatmap(const ros::TimerEvent& e) {
@@ -41,7 +41,7 @@ private:
                 {
                     int idx = i + j * width;
                     // normalize the heatmap values to max_costmap
-                    occupancy_grid_->data[idx] = (int8_t)(heatmap_vec_[idx] * max_costmap_ / (float)num_scans_);
+                    occupancy_grid_->data[idx] = static_cast<int8_t>(heatmap_vec_[idx] / (float)num_scans_ * max_costmap_);
                 }
             }
             heatmap_vec_.clear();
