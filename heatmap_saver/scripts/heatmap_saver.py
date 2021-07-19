@@ -13,12 +13,12 @@ class HeatmapSaver(object):
             "/heatmap", OccupancyGrid, self.show_heatmap)
 
     def save_heatmap(self, msg):
-        id=msg.header.seq
+        map_id=msg.header.seq
         width = msg.info.width
         height = msg.info.height
         heatmap = np.reshape(msg.data, (width, height))
         plt.imshow(heatmap, cmap='coolwarm', interpolation='nearest')
-        plt.savefig("./heatmaps/"+str(id)+".png")
+        plt.savefig("./heatmaps/"+str(map_id)+".png")
 
 if __name__ == '__main__':
     rospy.init_node('HeatmapSaver', anonymous=True)
