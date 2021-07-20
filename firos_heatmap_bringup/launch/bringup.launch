@@ -1,0 +1,15 @@
+<launch>
+
+  <arg name="tf_node" default="tf" />
+  <arg name="heatmapsave_node" default="rplidar_ros" />
+  <arg name="node_name" default="THMHO"/>
+
+  <group ns="$(arg node_name)">
+  <include file="$(find factory_sim)/launch/office.launch" />
+
+  <node name="$(arg heatmapsave_node)" pkg="factory_sim" type="core.py" output="screen">
+  </node>
+  
+  </group>
+
+</launch>
