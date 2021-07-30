@@ -24,8 +24,8 @@ target_link_libraries(costmap_generator
   ${catkin_LIBRARIES}
 )
 
-add_executable(costmap_aggregator src/costmap_aggregator.cpp)
-target_link_libraries(costmap_aggregator
+add_executable(heatmap_generator src/heatmap_generator.cpp)
+target_link_libraries(heatmap_generator
   ${catkin_LIBRARIES}
 )
 
@@ -33,7 +33,7 @@ install(TARGETS costmap_generator costmap_generator
   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
-install(TARGETS costmap_aggregator costmap_aggregator
+install(TARGETS heatmap_generator heatmap_generator
   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
