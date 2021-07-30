@@ -36,6 +36,10 @@
                 <rosparam file="$(find factory_sim)/config/costmap_params.yaml" command="load" ns="costmap/obstacles" />
         </node>
 
+        <node name="heatmap_generator" pkg="factory_sim" type="heatmap_generator" output="screen">
+                <param name="aggregation_time" value="3600" />
+        </node>
+
         <!-- Map server -->
         <node pkg="map_server" name="map_server" type="map_server" args="$(arg map_file)"/>
 
