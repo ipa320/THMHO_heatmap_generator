@@ -36,6 +36,10 @@
                 <rosparam file="$(find thmho_heatmap_generator)/config/costmap_params.yaml" command="load" ns="costmap/obstacles" />
         </node>
 
+        <node name="heatmap_generator" pkg="thmho_heatmap_generator" type="heatmap_generator" output="screen">
+                <param name="aggregation_time" value="3600" />
+        </node>
+
         <!-- Map server -->
         <node pkg="map_server" name="map_server" type="map_server" args="$(arg map_file)"/>
 
