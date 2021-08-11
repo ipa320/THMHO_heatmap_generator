@@ -10,12 +10,10 @@ find_package(catkin REQUIRED
 )
 
 catkin_package(
-    INCLUDE_DIRS include
     CATKIN_DEPENDS nav_msgs costmap_2d roscpp tf
 )
 
 include_directories(
-  include
   ${catkin_INCLUDE_DIRS}
 )
 
