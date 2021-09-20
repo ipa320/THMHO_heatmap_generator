@@ -41,8 +41,16 @@ Information about how to use the `THMHO_heatmap_generator` can be found in the [
 
 ## Testing
 
-
 ### Troubleshooting
+
+- Message `Requesting the map...` on terminal or `No map received` in RViz
+
+    The file pointed by `sim_map_file` (for simulation) or `real_map_file` (for real laser scanners) in `factory_sim/launch/factory.launch` may not exist in the workspace.
+
+- No heatmap is vizualized in `RViz`
+
+    If `Costmap` is not visualized as well, verify if the laser scan `topic` names specified in `factory_sim/config/costmap_params.yaml` are correct, and if the `tf` tree is published correctly.
+    If `Costmap` is visualized, it should be noted that the first heatmap is published after the time specified by `aggregation_time` argument for `heatmap_generator` node in `factory_sim/launch/factory.launch`. The default value is 3600, i.e. 1 hour. 
 
 
 ## Feedback
