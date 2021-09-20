@@ -33,11 +33,11 @@ The objective of the package is to create the temporal heatmaps that show for ea
 
 ## Install
 
-Information about how to install the `THMHO_heatmap_generator` can be found at the corresponding section of the [Installation & Administration Guide](installationguide.md).
+Information about how to install the `THMHO_heatmap_generator` can be found at the corresponding section of the [Installation & Administration Guide](docs/installationguide.md).
 
 ## Usage
 
-Information about how to use the `THMHO_heatmap_generator` can be found in the [User & Programmers Manual](usermanual.md).
+Information about how to use the `THMHO_heatmap_generator` can be found in the [User & Programmers Manual](docs/usermanual.md).
 
 ## Testing
 
