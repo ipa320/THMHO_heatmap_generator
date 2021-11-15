@@ -26,11 +26,11 @@
 
                 <!--Sensor Description from URDF-->
                 <group ns="sensors">
-                        <param name="robot_description" command="$(find xacro)/xacro --inorder $(find factory_sim)/urdf/lab.xacro"/>
+                        <param name="sensor_description" command="$(find xacro)/xacro $(find factory_sim)/urdf/lab.xacro"/>
                         <param name="use_gui" value="true"/>
-                        <node name="spawn_model" pkg="gazebo_ros" type="spawn_model" args="-urdf -param robot_description -model lab_model" output="screen"/>
+                        <node name="spawn_model" pkg="gazebo_ros" type="spawn_model" args="-urdf -param sensor_description -model lab_model" output="screen"/>
                         <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher">
-                                <param name="tf_prefix" value="sensors" />
+                                <remap from="robot_description" to="sensor_description" />
                         </node>
                 </group>
 
