@@ -7,37 +7,51 @@ import requests
 from datetime import datetime
 import sys
 
-
 class HeatmapSaver(object):
     def __init__(self):
-        # self.url = 'http://localhost:5000/insert'
+        self.url = 'http://localhost:5000/insert'
 
         self.heatmap_subscriber = rospy.Subscriber(
             "/costmap_generator/costmap/costmap", OccupancyGrid, self.save_heatmap)
 
         costmap = rospy.wait_for_message("/map", OccupancyGrid, timeout=100)
-        self.width = costmap.info.width # map_width : Width,
-        self.height = costmap.info.height # map_height :  Height 
-        self.mask = np.array(costmap.data).astype(bool)
-        print(self.mask)
+        # Throw exception if no costmap created
+        self.width = costmap.info.width
+        self.height = costmap.info.height
+        self.size = (self.height, self.width)
+        self.mask = np.array(costmap.data).reshape(self.size).astype(bool)
         self.mask = (~self.mask).astype(int)
-        # self.mask = csr_matrix(self.mask)
-        # self.mask = self.mask.toarray()
+        self.mask = csr_matrix(self.mask)
+        body = {
+            'name': 'base_mask',
+            'width': self.width,
+            'height': self.height,
+            'indices': self.mask.indices.tolist(),
+            'indptr': self.mask.indptr.tolist(),
+        }
+        requests.post(self.url, json = body)
+        self.mask = self.mask.toarray()
 
     def save_heatmap(self, msg):
-        data = np.array(msg.data)
-        masked_data = csr_matrix(data * self.mask)
+        data = np.array(msg.data).reshape(self.size)
+        print(f"Data shape: {data.shape}\nMask shape: {self.mask.shape}")
+        try:
+            masked_data = csr_matrix(data * self.mask)
+            print("It worked")
+        except Exception as e:
+            print(e)
         body = {
             'date': datetime.now().isoformat(),
-            'indices': masked_data.indices,
-            'indptr': masked_data.indptr,
-            'width': msg.info.width,
-            'height': msg.info.height    
+            'indices': masked_data.indices.tolist(),
+            'indptr': masked_data.indptr.tolist(),
         }
-        print("size: " + str(sys.getsizeof(body)))
-        print("orig size: " + str(sys.getsizeof(msg.data)))
+        requests.post(self.url, json = body)
 
 if __name__ == '__main__':
     rospy.init_node('heatmap_saver', anonymous=True)
-    heatmap = HeatmapSaver()
-    rospy.spin()
+    try:
+        heatmap = HeatmapSaver()
+        rospy.spin()
+    except:
+        # something
+
